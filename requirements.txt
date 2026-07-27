@@ -1,0 +1,22 @@
+# Core scientific stack
+numpy==2.4.6
+pandas==3.0.5
+scikit-learn==1.9.0
+joblib==1.5.3
+tqdm==4.70.0
+PyYAML==6.0.3
+
+# Plotting
+matplotlib==3.11.1
+seaborn==0.13.2
+
+# Geospatial (metadata.geojson / AOI plotting). Optional: the core pipeline
+# degrades gracefully to a plain DataFrame if these are unavailable.
+geopandas==1.1.4
+shapely==2.1.2
+
+# Notebook execution
+nbformat
+nbconvert
+ipykernel
+pillow          # inline display of pre-rendered figures in the notebook

@@ -1,0 +1,37 @@
+# ---------------------------------------------------------------------------
+# Data — DO NOT commit. The PASTIS subset is ~1.5 GB. See README for how to
+# place it locally.
+# ---------------------------------------------------------------------------
+PASTIS_subset/
+*.npy
+
+# Trained model — 428 MB, exceeds GitHub's file limit. Reproduce with
+# `python -m src.train` (see README). Prediction .npy maps are also ignored.
+outputs/models/
+outputs/predictions/
+
+# The assignment brief PDF and its extracted text (not part of the solution).
+*.pdf
+_pdf_text.txt
+
+# ---------------------------------------------------------------------------
+# Python
+# ---------------------------------------------------------------------------
+__pycache__/
+*.py[cod]
+*.egg-info/
+.ipynb_checkpoints/
+.pytest_cache/
+.venv/
+venv/
+
+# ---------------------------------------------------------------------------
+# OS / editor
+# ---------------------------------------------------------------------------
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Local Claude settings
+.claude/

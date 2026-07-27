@@ -1,0 +1,22 @@
+name: sola_agri
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.11
+  - pip
+  - pip:
+      - numpy==2.4.6
+      - pandas==3.0.5
+      - scikit-learn==1.9.0
+      - joblib==1.5.3
+      - tqdm==4.70.0
+      - PyYAML==6.0.3
+      - matplotlib==3.11.1
+      - seaborn==0.13.2
+      - geopandas==1.1.4
+      - shapely==2.1.2
+      - nbformat
+      - nbconvert
+      - ipykernel
+      - pillow

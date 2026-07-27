@@ -1,0 +1,95 @@
+# ---------------------------------------------------------------------------
+# Configuration for the crop-type classification workflow.
+# Everything that controls a run lives here so experiments are reproducible.
+# ---------------------------------------------------------------------------
+
+seed: 42
+
+data:
+  # Root of the provided dataset. Not tracked in git (see README + .gitignore).
+  root: "PASTIS_subset"
+  s2_dir: "DATA_S2"
+  ann_dir: "ANNOTATIONS"
+  metadata: "metadata.geojson"
+
+  n_bands: 10
+  patch_size: 128
+  n_timesteps: 46            # all patches in this subset have 46 acquisitions
+
+  # Sentinel-2 band order in the provided arrays (index -> name).
+  band_names: ["B2", "B3", "B4", "B5", "B6", "B7", "B8", "B8A", "B11", "B12"]
+
+labels:
+  # PASTIS semantic label scheme.
+  background_class: 0
+  void_class: 19             # unlabelled parcel borders -> ignored in training
+  ignore_background: false   # keep background (0) as a normal class
+  names:
+    0: "Background"
+    1: "Meadow"
+    2: "Soft winter wheat"
+    3: "Corn"
+    4: "Winter barley"
+    5: "Winter rapeseed"
+    6: "Spring barley"
+    7: "Sunflower"
+    8: "Grapevine"
+    9: "Beet"
+    10: "Winter triticale"
+    11: "Winter durum wheat"
+    12: "Fruits/vegetables/flowers"
+    13: "Potatoes"
+    14: "Leguminous fodder"
+    15: "Soybeans"
+    16: "Orchard"
+    17: "Mixed cereal"
+    18: "Sorghum"
+    19: "Void"
+
+split:
+  # PASTIS ships an official 5-fold assignment in metadata.geojson.
+  # We reuse it so the split is principled and reproducible.
+  strategy: "official_folds"
+  train_folds: [1, 2, 3]
+  val_folds: [4]
+  test_folds: [5]
+
+preprocess:
+  # Sentinel-2 L2A reflectance is scaled by 10000. Divide to get [0, 1]-ish.
+  reflectance_scale: 10000.0
+  clip_reflectance: [0.0, 1.0]
+
+features:
+  # Per-pixel temporal-spectral feature engineering.
+  temporal_stats: ["mean", "std", "min", "max", "p25", "p50", "p75", "amplitude"]
+  indices: ["ndvi", "ndwi", "ndre", "evi"]   # computed per timestep, then summarised
+
+sampling:
+  # Training on every pixel of every patch is unnecessary and memory-heavy.
+  # We randomly sample a capped number of labelled pixels per class per patch.
+  max_pixels_per_class_per_patch: 400
+  train_only_sampling: true    # val/test are evaluated densely (all pixels)
+
+postprocess:
+  # Unsupervised spatial majority filter over each prediction map to remove
+  # salt-and-pepper noise (adds a spatial prior the per-pixel model lacks).
+  spatial_majority: true
+  window: 5              # odd neighbourhood size for the vote
+
+model:
+  type: "random_forest"
+  random_forest:
+    n_estimators: 300
+    max_depth: null
+    min_samples_leaf: 2
+    max_features: "sqrt"
+    class_weight: "balanced_subsample"
+    n_jobs: -1
+
+paths:
+  outputs: "outputs"
+  figures: "outputs/figures"
+  metrics: "outputs/metrics"
+  predictions: "outputs/predictions"
+  models: "outputs/models"
+  splits: "splits"
